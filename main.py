@@ -39,6 +39,11 @@ ball.goto(5, 5)
 ballxdirection=0.2
 ballydirection=0.2
 
+# This code makes a display for player scores
+display = t.Turtle()
+display.speed(0)
+display
+
 
 
 
