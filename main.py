@@ -1,128 +1,108 @@
-import turtle as t
+# Import the pygame library and initialise the game engine
+import pygame
+from paddle import Paddle
+from ball import Ball
 
-# Player score at the beginning of the game
-playerAscore = 0
-playerBscore = 0
+pygame.init()
 
-# Create a window for the game and import screen form turtle
-window = t.Screen()
-window.title("Pong")
-window.bgcolor("blue")
-window.setup(width=800, height=600)
-window.tracer(0)
+# Defines some colors for the game
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 
-# Creates the left paddle
-lp = t.Turtle()
-lp.speed(0)
-lp.shape("square")
-lp.color("white")
-lp.shapesize(stretch_wid=5, stretch_len=1)
-lp.penup()
-lp.goto(-350, 0)
+# Open a new window
+size = (700, 500)
+screen = pygame.display.set_mode(size)
+pygame.display.set_caption("Pong")
 
-# Creates the right paddle
-rp = t.Turtle()
-rp.speed(0)
-rp.shape("square")
-rp.color("White")
-rp.shapesize(stretch_wid=5, stretch_len=1)
-rp.penup()
-rp.goto(350, 0)
+paddleA = Paddle(WHITE, 10, 100)
+paddleA.rect.x = 20
+paddleA.rect.y = 200
 
-# Creates the ball
-ball = t.Turtle()
-ball.speed(0)
-ball.shape("circle")
-ball.color("black")
-ball.penup()
-ball.goto(5, 5)
-ballxdirection=0.2
-ballydirection=0.2
+paddleB = Paddle(WHITE, 10, 100)
+paddleB.rect.x = 670
+paddleB.rect.y = 200
 
-# This code makes a display for player scores
-display = t.Turtle()
-display.speed(0)
-display.color("blue")
-display.penup()
-display.hideturtle()
-display.goto(0, 260)
-display.write("score", align="center", font=('Arial', 24, 'normal'))
+ball = Ball(WHITE, 10, 10)
+ball.rect.x = 345
+ball.rect.y = 195
 
-# code for moving left paddle
-def lpup():
-    y = lp.ycor()
-    y = y + 90
-    lp.sety(y)
+# This will be a list that will contain all the sprites we intend to use in our game.
+all_sprites_list = pygame.sprite.Group()
 
-def lpdown():
-    y = lp.ycor()
-    y = y + 90
-    lp.sety(y)
+# Add the paddles to the list of sprites
+all_sprites_list.add(paddleA)
+all_sprites_list.add(paddleB)
 
-# code for moving right paddle
-def rpup():
-    y = rp.ycor()
-    y = y + 90
-    rp.set(y)
+# Add the paddles and the ball to the list of objects
+all_sprites_list.add(paddleA)
+all_sprites_list.add(paddleB)
+all_sprites_list.add(ball)
 
-def rpdown():
-    y = rp.ycor()
-    y = y + 90
-    rp.set(y)
+# The loop will carry on until the user exits the game (e.g. clicks the close button).
+carryOn = True
 
-# Assign controls to play
-window.listen()
-window.onkeypress(lpup, 'w')
-window.onkeypress(lpdown, 's')
-window.onkeypress(rpup, 'Up')
-window.onkeypress(rpdown, 'Down')
+# The clock will be used to control how fast the screen updates
+clock = pygame.time.Clock()
 
-while True:
-    window.update()
+# Main Program Loop
+while carryOn:
+    # Main event loop
+    for event in pygame.event.get():  # user does something
+        if event.type == pygame.QUIT:  # If user clicks quit
+            carryOn = False  # exits the loop
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_x:  # pressing the x key will end the game
+                carryOn = False
 
-    # moving the ball
-    ball.setx(ball.xcor() + ballxdirection)
-    ball.sety(ball.ycor() + ballxdirection)
+            # Moving the paddles when the user uses the arrow keys (player A) or "W/S" keys (player B)
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_w]:
+                    paddleA.moveUp(5)
+            if keys[pygame.K_s]:
+                    paddleA.moveDown(5)
+            if keys[pygame.K_UP]:
+                    paddleB.moveUp(5)
+            if keys[pygame.K_DOWN]:
+                    paddleB.moveDown(5)
 
-# setting up a border
-    if ball.ycor() > 290:
-        ball.sety(290)
-        ballydirection = ballydirection*-1
-    if ball.ycor() < -290:
-        ball.sety(-290)
-        ballydirection = ballydirection*-1
+            # Check if the ball is bouncing against any of the 4 walls:
+            if ball.rect.x >= 690:
+                        ball.velocity[0] = -ball.velocity[0]
+            if ball.rect.x <= 0:
+                        ball.velocity[0] = -ball.velocity[0]
+            if ball.rect.y > 490:
+                        ball.velocity[1] = -ball.velocity[1]
+            if ball.rect.y < 0:
+                        ball.velocity[1] = -ball.velocity[1]
 
-    if ball.xcor() > 390:
-        ball.goto(0, 0)
-        ball_dx = ball_dx * -1
-        player_a_score = player_a_score + 1
-        display.clear()
-        display.write("Player A: {}  Player B: {} ".format(player_a_score, player_b_score),
-                  align="center", font=('Monaco', 24, "normal"))
-        os.system("afplay wallhit.wav&")
+            # Detect collisions between the ball and the paddles
+            if pygame.sprite.collide_mask(ball, paddleA) or pygame.sprite.collide_mask(ball, paddleB):
+                ball.bounce()
 
-    if(ball.xcor()) < -390:
-        # Left width paddle Border
-        ball.goto(0,0)
-        ball_dx = ball_dx * -1
-        player_b_score = player_b_score + 1
-        display.clear()
-        display.write("Player A: {}  Player B: {} ".format(player_a_score, player_b_score), align="center", font=('Monaco', 24, "normal"))
-        os.system("afplay wallhit.wav&")
+all_sprites_list.update()
 
-# Handling the collisions with paddles.
+# Drawing code should go here
+# clears the screen to black.
+screen.fill(BLACK)
+# Draws the net
+pygame.draw.line(screen, WHITE, [349, 0], [349, 500], 5)
 
-    if (ball.xcor() > 340) and (ball.xcor() < 350) and (
-            ball.ycor() < rp.ycor() + 40 and ball.ycor() > rp.ycor() - 40):
-        ball.setx(340)
-        ball_dx = ball_dx * -1
-        os.system("afplay paddle.wav&")
+# draws all the sprites at the same time
+all_sprites_list.draw(screen)
 
-    if (ball.xcor() < -340) and (ball.xcor() > -350) and (
-            ball.ycor() < lp.ycor() + 40 and ball.ycor() > lp.ycor() - 40):
-        ball.setx(-340)
-        ball_dx = ball_dx * -1
-        os.system("afplay paddle.wav&")
+# updates the screen with new sprites
+pygame.display.flip()
+
+# Limits game to 60 frames per second
+clock.tick(60)
+
+# exits the main program loop
+pygame.quit()
+
+
+
+
+
 
 
 
