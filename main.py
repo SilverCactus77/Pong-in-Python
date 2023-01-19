@@ -1,12 +1,11 @@
 # Import the pygame library and initialise the game engine
-# Also import Paddle class and Ball class
 import pygame
 from paddle import Paddle
 from ball import Ball
 
 pygame.init()
 
-# Defines colors for game
+# Defines some colors for the game
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
@@ -27,21 +26,21 @@ ball = Ball(WHITE, 10, 10)
 ball.rect.x = 345
 ball.rect.y = 195
 
-# This list contains all sprites in the code
+# This will be a list that will contain all the sprites
 all_sprites_list = pygame.sprite.Group()
 
-# Adds the paddles to the list of sprites
+# Add the 2 paddles and the ball to the list of objects
 all_sprites_list.add(paddleA)
 all_sprites_list.add(paddleB)
 all_sprites_list.add(ball)
 
-# This loop carries on until user exits game
+# The loop will carry on until the user exits the game (e.g. clicks the close button).
 carryOn = True
 
-# The clock is used to control how fast the screen updates
+# The clock will be used to control how fast the screen updates
 clock = pygame.time.Clock()
 
-# Initialises player scores
+# Initialise player scores
 scoreA = 0
 scoreB = 0
 
@@ -50,12 +49,12 @@ while carryOn:
     # Main event loop
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
-            carryOn = False  # signifies to exit this loop
+            carryOn = False  # Flag that code is done so exit this loop
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_x:  # Pressing the x Key will quit the game
                 carryOn = False
 
-    # Designates controls to each player
+    # Moving the paddles when the user uses the arrow keys (player A) "W/S" keys (player B) Arrow Keys
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
         paddleA.moveUp(5)
@@ -66,10 +65,9 @@ while carryOn:
     if keys[pygame.K_DOWN]:
         paddleB.moveDown(5)
 
-    # This is the game logic
-    all_sprites_list.update()
+        all_sprites_list.update()
 
-    # Checks if the ball is bouncing against any of the 4 walls
+    # Checks if the ball is bouncing against any of the 4 walls:
     if ball.rect.x >= 690:
         scoreA += 1
         ball.velocity[0] = -ball.velocity[0]
@@ -85,10 +83,9 @@ while carryOn:
     if pygame.sprite.collide_mask(ball, paddleA) or pygame.sprite.collide_mask(ball, paddleB):
         ball.bounce()
 
-
     # Clears the screen to black
     screen.fill(BLACK)
-    # Draws the line in middle of screen
+    # Draws the net for the game in middle of screen
     pygame.draw.line(screen, WHITE, [349, 0], [349, 500], 5)
 
     # Draws all the sprites at once
@@ -101,21 +98,11 @@ while carryOn:
     text = font.render(str(scoreB), 1, WHITE)
     screen.blit(text, (420, 10))
 
-    # Updates the screen with what was drawn
+    # Updates screen with all drawings
     pygame.display.flip()
 
     # Limits game to 60 frames per second
     clock.tick(60)
 
-    # exits main code loop
-    pygame.quit()
-
-
-
-
-
-
-
-
-
-
+# exits main program loop
+pygame.quit()
