@@ -54,6 +54,7 @@ while carryOn:
             if event.key == pygame.K_x:  # Pressing the x Key will quit the game
                 carryOn = False
 
+
     # Moving the paddles when the user uses the arrow keys (player A) "W/S" keys (player B) Arrow Keys
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
