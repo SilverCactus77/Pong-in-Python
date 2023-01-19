@@ -82,6 +82,9 @@ while carryOn:
     # Detects collisions between the ball and the paddles
     if pygame.sprite.collide_mask(ball, paddleA) or pygame.sprite.collide_mask(ball, paddleB):
         ball.bounce()
+    if pygame.sprite.collide_mask(ball, paddleA) or pygame.sprite.collide_mask(ball, paddleB):
+        effect = pygame.mixer.Sound('Sounds/Pong.mp3')
+        effect.play()
 
     # Clears the screen to black
     screen.fill(BLACK)
