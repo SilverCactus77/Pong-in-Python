@@ -48,7 +48,7 @@ scoreB = 0
 # Main Program Loop
 while carryOn:
     # Main event loop
-    for event in pygame.event.get():  # User does an input
+    for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
             carryOn = False  # signifies to exit this loop
         elif event.type == pygame.KEYDOWN:
@@ -86,29 +86,29 @@ while carryOn:
         ball.bounce()
 
 
-# Clears the screen to black
-screen.fill(BLACK)
-# Draws the line in middle of screen
-pygame.draw.line(screen, WHITE, [349, 0], [349, 500], 5)
+    # Clears the screen to black
+    screen.fill(BLACK)
+    # Draws the line in middle of screen
+    pygame.draw.line(screen, WHITE, [349, 0], [349, 500], 5)
 
-# Draws all the sprites at once
-all_sprites_list.draw(screen)
+    # Draws all the sprites at once
+    all_sprites_list.draw(screen)
 
-# Displays scores
-font = pygame.font.Font(None, 74)
-text = font.render(str(scoreA), 1, WHITE)
-screen.blit(text, (250, 10))
-text = font.render(str(scoreB), 1, WHITE)
-screen.blit(text, (420, 10))
+    # Displays scores
+    font = pygame.font.Font(None, 74)
+    text = font.render(str(scoreA), 1, WHITE)
+    screen.blit(text, (250, 10))
+    text = font.render(str(scoreB), 1, WHITE)
+    screen.blit(text, (420, 10))
 
-# Updates the screen with what was drawn
-pygame.display.flip()
+    # Updates the screen with what was drawn
+    pygame.display.flip()
 
-# Limits game to 60 frames per second
-clock.tick(60)
+    # Limits game to 60 frames per second
+    clock.tick(60)
 
-# exits main code loop
-pygame.quit()
+    # exits main code loop
+    pygame.quit()
 
 
 
