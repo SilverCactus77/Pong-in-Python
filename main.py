@@ -74,6 +74,12 @@ while carryOn:
     if ball.rect.x <= 0:
         scoreB += 1
         ball.velocity[0] = -ball.velocity[0]
+    if ball.rect.x >= 690:
+        effect = pygame.mixer.Sound('Sounds/Score.mp3')
+        effect.play()
+    if ball.rect.x <= 0:
+        effect = pygame.mixer.Sound('Sounds/Score.mp3')
+        effect.play()
     if ball.rect.y > 490:
         ball.velocity[1] = -ball.velocity[1]
     if ball.rect.y < 0:
